@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "./api/client";
+import { getPermissions } from "./service/permissions/permissions.services";
 
 type Permission = {
   id: number;
@@ -11,20 +12,13 @@ type Permission = {
 function App() {
   const [permissions, setPermissions] = useState<Permission[]>([]);
   // const [loading, setLoading] = useState(false);
-  const controller = new AbortController();
-  const url = "http://localhost:3000/permissions";
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  const fetchPermissions = async () => {
-  const res = await api.get(url, { signal: controller.signal });
-    setPermissions(res.data);
-  };
-
-  const createPermission = async () => {
+  const handleCreatePermission = async () => {
     try {
-      await api.post(url, {
+      await api.post("/permissions", {
         name,
         description,
         active: true,
@@ -33,14 +27,26 @@ function App() {
       setName("");
       setDescription("");
 
-      fetchPermissions();
+      const data = await getPermissions();
+
+      setPermissions(data);
     } catch (error) {
       console.error(error);
     }
   };
-  
-  useEffect(() => { 
-    fetchPermissions();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getPermissions();
+        setPermissions(data);
+        console.log(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
   }, []);
   
   return (
@@ -59,7 +65,7 @@ function App() {
         onChange={(e) => setDescription(e.target.value)}
       />
 
-      <button onClick={createPermission}>
+      <button onClick={handleCreatePermission}>
         Create
       </button>
 
