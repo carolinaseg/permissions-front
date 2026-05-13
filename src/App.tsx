@@ -12,7 +12,8 @@ type Permission = {
 
 function App() {
   const [permissions, setPermissions] = useState<Permission[]>([]);
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -24,7 +25,7 @@ function App() {
         description,
         active: true,
       });
-
+      
       setName("");
       setDescription("");
 
@@ -39,12 +40,17 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const data = await getPermissions();
         setPermissions(data);
         console.log(data);
       } catch (error) {
+        setError("Failed to create permission");
         console.error(error);
-      }
+      } finally {
+      setLoading(false);
+    }
     };
 
     fetchData();
@@ -70,7 +76,14 @@ function App() {
         Create
       </button>
 
-      <PermissionList permissions={permissions} />
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p style={{ color: "red" }}>{error}</p>
+      ) : (
+        <PermissionList permissions={permissions} />
+      )}
     </div>
   );
 }
