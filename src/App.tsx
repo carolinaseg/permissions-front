@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "./api/client";
 import { getPermissions } from "./service/permissions/permissions.services";
+import PermissionList from "./pages/permission/PermissionList";
 
 type Permission = {
   id: number;
@@ -69,15 +70,7 @@ function App() {
         Create
       </button>
 
-      <h2>Permissions</h2>
-
-      <ul>
-        {permissions.map((p) => (
-          <li key={p.id}>
-            {p.name} - {p.description} {p.active ? "🟢" : "🔴"}
-          </li>
-        ))}
-      </ul>
+      <PermissionList permissions={permissions} />
     </div>
   );
 }
