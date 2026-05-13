@@ -14,13 +14,25 @@ const PermissionList = ({ permissions }: Props) => {
     <div>
       <h2>Permissions</h2>
 
-      <ul>
-        {permissions.map((permission) => (
-          <li key={permission.id}>
-            {permission.name} - {permission.description}
-          </li>
-        ))}
-      </ul>
+      <table border={1} cellPadding={5} cellSpacing={0}>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {permissions.map((permission) => (
+            <tr key={permission.id}>
+              <td>{permission.name}</td>
+              <td>{permission.description}</td>
+              <td>{permission.active ? "🟢 Active" : "🔴 Inactive"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
